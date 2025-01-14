@@ -40,7 +40,7 @@ const EmployeeDashboard = () => {
                     <p className='text-xl text-gray-500'>{employee.designation}</p>
                   </div>
                   <div className='flex justify-center items-center border-4 border-blue-900 rounded-full w-28 h-28'>
-                    <img src={`http://localhost:3000/images/${employee?.image}`} alt="" className='w-[100px] h-[100px] rounded-full' />
+                    <img src={`https://hr-flow-server.vercel.app/images/${employee?.image}`} alt="" className='w-[100px] h-[100px] rounded-full' />
                   </div>
                 </div>
                 <div className='flex justify-between rounded bg-white p-7'>

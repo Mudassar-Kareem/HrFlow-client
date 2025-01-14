@@ -25,12 +25,7 @@ useEffect(()=>{
   console.log(sumOfSalary)
 },[dispatch])
   
-  const employees = [
-    {id : "87654678",name: "mudassar",email: "mudassarkareem916@gmail.com",salary: "2000$",designation: 4,adress: "Lahore"},
-    {id : "87654678",name: "mudassar",email: "mudassarkareem916@gmail.com",salary: "2000$",designation: 4,adress: "Lahore"},
-    {id : "87654678",name: "mudassar",email: "mudassarkareem916@gmail.com",salary: "2000$",designation: 4,adress: "Lahore"},
-    {id : "87654678",name: "mudassar",email: "mudassarkareem916@gmail.com",salary: "2000$",designation: 4,adress: "Lahore"}
-  ]
+  
   if(loading){
     return <Spinner/>
   }

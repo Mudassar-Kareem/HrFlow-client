@@ -15,20 +15,7 @@ const History = () => {
     useEffect(()=>{
         dispatch(getAllAttendence());
     })
-    const attendences = [
-        {
-            history: 'bgtyhnn1234',
-            employee: "pokjbvx4589o",
-            date: "01/08/2024",
-            status: 'absent'
-        },
-        {
-            history: 'bgtyhnn1234',
-            employee: "pokjbvx4589o",
-            date: "26/7/2004",
-            status: 'present'
-        },
-    ]
+   
   return (
     <div className="flex">
         <Admin/>

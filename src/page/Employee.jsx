@@ -217,7 +217,7 @@ const Employee = () => {
                   <div className="flex justify-between">
                     <div className="flex flex-col gap-1">
                       <img
-                        src={`http://localhost:3000/images/${emp?.image}`}
+                        src={`https://hr-flow-server.vercel.app/images/${emp?.image}`}
                         alt="user"
                         className=" rounded-full h-[80px] w-[80px] object-cover"
                       />

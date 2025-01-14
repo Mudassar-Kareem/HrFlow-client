@@ -1,2 +1,2 @@
-const baseurl = "http://localhost:3000/api/v1";
+const baseurl = "https://hr-flow-server.vercel.app/";
 export default baseurl
