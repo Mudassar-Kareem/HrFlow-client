@@ -66,7 +66,7 @@ const handleFileInputChange = (e) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const imageBase64 = await convertToBase64(image);
+      
   
       const payload = {
         name,
