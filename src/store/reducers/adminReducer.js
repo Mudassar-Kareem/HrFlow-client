@@ -42,7 +42,7 @@ export const createEmployee = createAsyncThunk(
     async (info, { rejectWithValue, fulfillWithValue }) => {
       try {
         const { data } = await axios.post(`${baseurl}/createemployee`, info, {
-          withCredentials: true,
+          
         });
         return fulfillWithValue(data);
       } catch (error) {
