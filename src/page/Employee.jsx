@@ -209,10 +209,9 @@ const handleFileInputChange = (e) => {
                     <input
                       type="file"
                       name="image"
-                      id="file-input"
                       accept=".jpg,.jpeg,.png"
                       onChange={handleFileInputChange}
-                      className="sr-only"
+                      className="w-full border border-[black] rounded-lg "
                     />
                     
                   </div>
