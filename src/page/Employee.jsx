@@ -55,60 +55,55 @@ const Employee = () => {
     dispatch(getEmployeeCount());
   }, [dispatch]);
 
+  // Convert image to base64
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    
-  
-    // Convert image to base64
-   const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
 
-const handleSubmit = async () => {
-  try {
-    // Ensure image is a Blob
-    if (!(image instanceof Blob)) {
-      console.error('Provided image is not a valid Blob object');
-      return;
+    try {
+      // Ensure image is a Blob
+      if (!(image instanceof Blob)) {
+        console.error('Provided image is not a valid Blob object');
+        return;
+      }
+
+      console.log('Converting image to base64...');
+      const imageBase64 = await convertToBase64(image);
+
+      console.log('Base64 image:', imageBase64); // For debugging
+
+      const payload = {
+        name,
+        email,
+        password,
+        address,
+        salary,
+        gender,
+        designation,
+        dateOfJoined,
+        phoneNo,
+        department,
+        deductionForLeave,
+        image: imageBase64, // Sending image as base64 string
+      };
+
+      console.log('Payload:', payload); // For debugging
+
+      await dispatch(createEmployee(payload));
+      console.log('Employee created successfully');
+    } catch (err) {
+      toast.error('Error creating employee');
+      console.error(err);
     }
-
-    console.log('Converting image to base64...');
-    const imageBase64 = await convertToBase64(image);
-    
-    console.log('Base64 image:', imageBase64); // For debugging
-
-    const payload = {
-      name,
-      email,
-      password,
-      address,
-      salary,
-      gender,
-      designation,
-      dateOfJoined,
-      phoneNo,
-      department,
-      deductionForLeave,
-      image: imageBase64, // Sending image as base64 string
-    };
-
-    console.log('Payload:', payload); // For debugging
-
-    await dispatch(createEmployee(payload));
-    console.log('Employee created successfully');
-  } catch (err) {
-    toast.error('Error creating employee');
-    console.error(err);
-  }
-};
-
-  
+  };
 
   const clearFormData = () => {
     setName('');
@@ -215,17 +210,17 @@ const handleSubmit = async () => {
                 <form onSubmit={handleSubmit}>
                   <div className=' flex flex-col gap-8'>
                     <Input name='name' label='Enter Name' color='blue' value={name} onChange={(e)=>setName(e.target.value)}/>
-                    <Input name='email' label='Enter Email Adress' color='blue' value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                    <Input name='email' label='Enter Email Address' color='blue' value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     <Input name='password' label='Enter Password ' color='blue' value={password} onChange={(e)=>setPassword(e.target.value)}/>
                     <Input name='address' label='Enter Address ' color='blue' value={address} onChange={(e)=>setAddress(e.target.value)}/>
                     <Input type='date' label='Enter Date ' color='blue' value={dateOfJoined} onChange={(e)=>setDateOfJoined(e.target.value)}/>
-                    <Input name='number' label='Enter Phone Number' color='blue' value={phoneNo} onChange={(e)=>setPhoneNo(e.target.value)}/>
+                    <Input name='phoneNo' label='Enter Phone Number' color='blue' value={phoneNo} onChange={(e)=>setPhoneNo(e.target.value)}/>
                     <Input name='salary' label='Enter Salary' color='blue' value={salary} onChange={(e)=>setSalary(e.target.value)}/>
-                    <Input name='department' label='Enter Deparment ' color='blue' value={department} onChange={(e)=>setDepartment(e.target.value)}/>
-                    <Input name='leave' label='Enter Leave ' color='blue' value={deductionForLeave} onChange={(e)=>setDeductionForLeave(e.target.value)}/>
+                    <Input name='department' label='Enter Department ' color='blue' value={department} onChange={(e)=>setDepartment(e.target.value)}/>
+                    <Input name='deductionForLeave' label='Enter Leave ' color='blue' value={deductionForLeave} onChange={(e)=>setDeductionForLeave(e.target.value)}/>
                     <Input name='designation' label='Enter Designation ' color='blue' value={designation} onChange={(e)=>setDesignation(e.target.value)}/>
                     <Input name='gender' label='Enter Gender ' color='blue' value={gender} onChange={(e)=>setGender(e.target.value)}/>
-                    <Input  type='file' id='from file' className="w-full border border-[black] rounded-lg " />
+                    <Input  type='file' id='from file' className="w-full border border-[black] rounded-lg " onChange={(e) => setImage(e.target.files[0])}/>
                   </div>
                   <div className='modal-button'>
                     <button type='submit' aria-label='Close' data-bs-dismiss="modal" className=" bg-gradient-to-r from-[#003268] to-[#006ee8] text-[white] mt-3  p-2 rounded-lg">
@@ -236,9 +231,8 @@ const handleSubmit = async () => {
               </div>
             </div>
           </div>
-          
-           </div>
-           <div className="grid grid-cols-3 gap-8">
+        </div>
+        <div className="grid grid-cols-3 gap-8">
           {allEmployees ? (
             allEmployees?.map((emp, index) => {
               return (
@@ -256,8 +250,7 @@ const handleSubmit = async () => {
                       <h1 className="mt-2 text-[21px]">{emp.name}</h1>
                       <p className=" text-[#0000007b]">{emp.designation}</p>
                     </div>
-                    {/*  */}
-                    <div class="dropdown">
+                    <div className="dropdown">
                       <button
                         type="button"
                         id={`dropdownMenuButton${index}`}
@@ -267,11 +260,11 @@ const handleSubmit = async () => {
                         <HiDotsHorizontal className="text-[25px] cursor-pointer" />
                       </button>
                       <ul
-                        class="dropdown-menu"
+                        className="dropdown-menu"
                         aria-labelledby={`dropdownMenuButton${index}`}
                       >
                         <li>
-                          <a class="dropdown-item">
+                          <a className="dropdown-item">
                             <button
                               type="button"
                               data-bs-toggle="modal"
@@ -283,10 +276,9 @@ const handleSubmit = async () => {
                           </a>
                         </li>
 
-                        {/*  */}
                         <li>
                           <a
-                            class="dropdown-item hover:bg-[red] hover:text-white"
+                            className="dropdown-item hover:bg-[red] hover:text-white"
                             href="#"
                             onClick={() => deleteHandle(emp._id)}
                           >
@@ -323,44 +315,40 @@ const handleSubmit = async () => {
           ) : (
             <p>Loading...</p>
           )}
-         <div   class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"  aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title text-[25px]" id="exampleModalLabel"> Update Employee</h5>
-                <button type=' button' aria-label='Close' data-bs-dismiss="modal" class=' text-white bg-[#54595e] rounded-md p-2 w-20'>Close</button>
-              </div>
-              <div class='modal-body'>
-                <form onSubmit={handleSubmitUpdate} >
-                  <div className=' flex flex-col gap-3'>
-                    <Input color='blue' name='name' label='Enter Name' value={updateData.name} onChange={handleChange}/>
-                    <Input color='blue' name='email' label='Enter email Address' value={updateData.email} onChange={handleChange}/>
-                    <Input color='blue' name='password' label='Enter Password' value={updateData.password} onChange={handleChange}/>
-                    <Input color='blue' name='address' label='Enter Address' value={updateData.address} onChange={handleChange}/>
-                    <Input type='date' color='blue' name='dateOfJoined' label='Enter Date' value={updateData.dateOfJoined} onChange={handleChange}/>
-                    <Input type='number' color='blue' name='phoneNo' label='Enter PhoneNo' value={updateData.phoneNo} onChange={handleChange}/>
-                    <Input  type='number' color='blue' name='salary' label='Enter Salary' value={updateData.salary} onChange={handleChange}/>
-                    <Input color='blue' name='department' label='Enter Department' value={updateData.department} onChange={handleChange}/>
-                    <Input color='blue' name='deductionForLeave' label='Enter Leave' value={updateData.deductionForLeave} onChange={handleChange}/>
-                    <Input color='blue' name='designation' label='Enter Designation' value={updateData.designation} onChange={handleChange}/>
-                    <Input color='blue' name='gender' label='Enter Gender' value={updateData.gender} onChange={handleChange}/>
-                  </div>
-                  <div class='modal-footer'>
-                    <button className=" bg-gradient-to-r from-[#003268] to-[#006ee8] text-[white] px-4 py-2 rounded-lg" data-bs-dismiss="modal" type=' submit' aria-label='Close'> Update Employee</button>
-                  </div>
-                </form>
+          <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title text-[25px]" id="exampleModalLabel">Update Employee</h5>
+                  <button type="button" aria-label="Close" data-bs-dismiss="modal" className="text-white bg-[#54595e] rounded-md p-2 w-20">Close</button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={handleSubmitUpdate}>
+                    <div className="flex flex-col gap-3">
+                      <Input color="blue" name="name" label="Enter Name" value={updateData.name} onChange={handleChange} />
+                      <Input color="blue" name="email" label="Enter email Address" value={updateData.email} onChange={handleChange} />
+                      <Input color="blue" name="password" label="Enter Password" value={updateData.password} onChange={handleChange} />
+                      <Input color="blue" name="address" label="Enter Address" value={updateData.address} onChange={handleChange} />
+                      <Input type="date" color="blue" name="dateOfJoined" label="Enter Date" value={updateData.dateOfJoined} onChange={handleChange} />
+                      <Input type="number" color="blue" name="phoneNo" label="Enter PhoneNo" value={updateData.phoneNo} onChange={handleChange} />
+                      <Input type="number" color="blue" name="salary" label="Enter Salary" value={updateData.salary} onChange={handleChange} />
+                      <Input color="blue" name="department" label="Enter Department" value={updateData.department} onChange={handleChange} />
+                      <Input color="blue" name="deductionForLeave" label="Enter Leave" value={updateData.deductionForLeave} onChange={handleChange} />
+                      <Input color="blue" name="designation" label="Enter Designation" value={updateData.designation} onChange={handleChange} />
+                      <Input color="blue" name="gender" label="Enter Gender" value={updateData.gender} onChange={handleChange} />
+                    </div>
+                    <div className="modal-footer">
+                      <button type="submit" className="btn btn-primary bg-[#003268]">Update</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-         </div>
         </div>
-        </div>
-       
+      </div>
     </div>
   );
 };
 
 export default Employee;
-
-
-
