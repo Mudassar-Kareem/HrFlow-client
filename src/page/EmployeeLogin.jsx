@@ -10,22 +10,25 @@ const EmployeeLogin = () => {
     const {loading,error,isEmployee} =useSelector((state)=>state.admin)
     const dispatch =useDispatch()
     const navigate = useNavigate()
-    let id =null;
+    // let id =null;
     const submit = async (e) => {
       e.preventDefault();
       try {
-        const action = await dispatch(employeeLogin({email,password}))
-        id = action.payload;
-        console.log(id)
-        if (isEmployee && id !==null) {
-          navigate(`/employeedashboard/${id}`);
-          toast.success("Login Successfully");
-        }
+        const action = await dispatch(employeeLogin({ email, password }));
+        const { id, message } = action.payload; // Ensure you're accessing id from the payload
     
+        if (message === "Login successfully" && id) {
+          console.log(id); // Debugging id
+          navigate(`/employeedashboard/${id}`); // Navigate to the employee dashboard
+          toast.success("Login Successfully");
+        } else {
+          toast.error("Login failed: " + message); // Error message handling
+        }
       } catch (error) {
-        toast.error(error.message);
+        toast.error("Error: " + error.message); // Error handling
       }
     };
+    
   return (
     <div className=" flex justify-center items-center  w-full h-screen bg-gradient-to-r from-[#003268] to-[#006ee8]">
         <div className=" w-1/4 h-auto p-10 rounded-lg bg-white ">

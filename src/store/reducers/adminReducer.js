@@ -15,7 +15,7 @@ const initialState = {
     isLogout: false,
     isEmployee: false,
     employee: null,
-    attendance: null,
+    attendance: [],
     employeeDeleted:false,
     employeeId: null
 };
@@ -142,13 +142,14 @@ export const getSingleEmployee = createAsyncThunk(
       const { data } = await axios.get(`${baseurl}/singleemployee/${id}`, {
         withCredentials: true,
       });
-      console.log(data.employee);
-      return fulfillWithValue(data.employee);
+      console.log(data.employee); // Verify the employee data received
+      return fulfillWithValue(data.employee); // Return the employee data
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data); // Return error data
     }
   }
 );
+
 // get single attendance data
 export const getSingleAttendance = createAsyncThunk(
   "admin/single-attendance",
@@ -157,13 +158,18 @@ export const getSingleAttendance = createAsyncThunk(
       const { data } = await axios.get(`${baseurl}/singleAttendence/${id}`, {
         withCredentials: true,
       });
-      console.log(data);
+      console.log('API Response:', data);  // Check the entire response
+      if (data && data.attendance) {
+        console.log('Attendance Data:', data.attendance); // Check the specific attendance data
+      }
       return fulfillWithValue(data.attendance);
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error('API Error:', error.response?.data);  // Add error logging for debugging
+      return rejectWithValue(error.response?.data);
     }
   }
 );
+
 // delete employee
 export const deleteEmployee = createAsyncThunk("admin/deleteemployee",async(id,{rejectWithValue,fulfillWithValue})=>{
   try {
@@ -192,7 +198,7 @@ export const adminReducer = createSlice({
             state.isLogout =false
             state.isEmployee= false
             state.employee = null;
-            state.attendance = null;
+            state.attendance = [];
             state.employeeDeleted=false
             state.employeeId = null;
         },
@@ -324,18 +330,18 @@ export const adminReducer = createSlice({
                 state.error = action.error.message;
             });
               //single  Attendence
-            builder.addCase(getSingleAttendance.pending, (state) => {
+              builder.addCase(getSingleAttendance.pending, (state) => {
                 state.loading = true;
             });
             builder.addCase(getSingleAttendance.fulfilled, (state, action) => {
                 state.loading = false;
-                state.attendance = action.payload;
+                state.attendance = action.payload; // ensure this is 'attendance'
             });
             builder.addCase(getSingleAttendance.rejected, (state, action) => {
                 state.loading = false; 
                 state.error = action.error.message;
             });
-
+            
               //employee deleted
              builder.addCase(deleteEmployee.pending, (state) => {
                 state.loading = true;

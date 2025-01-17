@@ -1,115 +1,146 @@
-import React, { useEffect, useState } from 'react'
-import Admin from '../comonents/Admin'
-import { Input } from "@material-tailwind/react";
-import img from "../comonents/img/profile.jpg"
-import { HiDotsHorizontal } from "react-icons/hi";
-import { CgMail } from "react-icons/cg";
-import { FaPhone } from "react-icons/fa";
-import {createEmployee,getAllEmployees,getEmployeeCount,deleteEmployee } from '../store/reducers/adminReducer';
+import React, { useEffect, useState } from 'react';
+import Admin from '../comonents/Admin';
+import { Input } from '@material-tailwind/react';
+import { HiDotsHorizontal } from 'react-icons/hi';
+import { CgMail } from 'react-icons/cg';
+import { FaPhone } from 'react-icons/fa';
+import { createEmployee, getAllEmployees, getEmployeeCount, deleteEmployee } from '../store/reducers/adminReducer';
 import baseurl from '../store/baseurl';
 import axios from 'axios';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import { clearState } from '../store/reducers/adminReducer';
 import toast from 'react-hot-toast';
 
 const Employee = () => {
-  const dispatch =useDispatch();
-  const [selectedId, setSelectedId] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [image, setImage] = useState("");
-  const [dateOfJoined, setDateOfJoined] = useState("");
-  const [salary, setSalary] = useState("");
-  const [department, setDepartment] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [deductionForLeave, setDeductionForLeave] = useState("");
-  const [designation, setDesignation] = useState("");
-  const [gender, setGender] = useState("");
+  const dispatch = useDispatch();
+  const [selectedId, setSelectedId] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [address, setAddress] = useState('');
+  const [image, setImage] = useState('');
+  const [dateOfJoined, setDateOfJoined] = useState('');
+  const [salary, setSalary] = useState('');
+  const [department, setDepartment] = useState('');
+  const [phoneNo, setPhoneNo] = useState('');
+  const [deductionForLeave, setDeductionForLeave] = useState('');
+  const [designation, setDesignation] = useState('');
+  const [gender, setGender] = useState('');
   const [updateData, setUpdateData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    address: "",
-    dateOfJoined: "",
-    salary: "",
-    department: "",
-    phoneNo: "",
-    deductionForLeave: "",
-    designation: "",
-    gender: "",
+    name: '',
+    email: '',
+    password: '',
+    image: '',
+    address: '',
+    dateOfJoined: '',
+    salary: '',
+    department: '',
+    phoneNo: '',
+    deductionForLeave: '',
+    designation: '',
+    gender: '',
   });
+
   const {
     isEmployeeCreated,
     allEmployees,
     loading,
     error,
     totalEmployee,
-    employeeDeleted
+    employeeDeleted,
   } = useSelector((state) => state.admin);
-  useEffect(()=>{
+
+  useEffect(() => {
     dispatch(getAllEmployees());
-    dispatch(getEmployeeCount())
-  },[dispatch])
-  const handleSubmit = (e) =>{
+    dispatch(getEmployeeCount());
+  }, [dispatch]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if( !name ||!email ||!password ||!address ||!dateOfJoined ||!salary ||!department ||!phoneNo ||!deductionForLeave || !designation ||!gender ||!image){
-      alert('please fill all fields')
+  
+    if (
+      !name || !email || !password || !address || 
+      !dateOfJoined || !salary || !department || 
+      !phoneNo || !deductionForLeave || !designation || 
+      !gender || !image
+    ) {
+      alert('Please fill all fields');
       return;
     }
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("gender", gender);
-    formData.append("designation", designation);
-    formData.append("password", password);
-    formData.append("address", address);
-    formData.append("salary", salary);
-    formData.append("image", image);
-    formData.append("dateOfJoined", dateOfJoined);
-    formData.append("department", department);
-    formData.append("phoneNo", phoneNo);
-    formData.append("deductionForLeave", deductionForLeave);
-    dispatch(createEmployee(formData))
-  }
-  const clearFormDate= () =>{
-    setName("");
-    setEmail("");
-    setPassword("");
-    setAddress("");
-    setImage("");
-    setDateOfJoined("");
-    setSalary("");
-    setDepartment("");
-    setPhoneNo("");
-    setDeductionForLeave("");
-    setDesignation("");
-    setGender("");
-  }
-  useEffect(()=>{
-    if(isEmployeeCreated){
+  
+    // Convert image to base64
+    const convertToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    };
+  
+    try {
+      const imageBase64 = await convertToBase64(image);
+  
+      const payload = {
+        name,
+        email,
+        password,
+        address,
+        salary,
+        gender,
+        designation,
+        dateOfJoined,
+        phoneNo,
+        department,
+        deductionForLeave,
+        image: imageBase64, // Sending image as base64 string
+      };
+  
+      await dispatch(createEmployee(payload));
+    } catch (err) {
+      toast.error('Error creating employee');
+      console.error(err);
+    }
+  };
+  
+
+  const clearFormData = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setAddress('');
+    setImage('');
+    setDateOfJoined('');
+    setSalary('');
+    setDepartment('');
+    setPhoneNo('');
+    setDeductionForLeave('');
+    setDesignation('');
+    setGender('');
+  };
+
+  useEffect(() => {
+    if (isEmployeeCreated) {
       dispatch(clearState());
       dispatch(getAllEmployees());
-      dispatch(getEmployeeCount())
-      clearFormDate()
-      toast.success("User created successfully")
+      dispatch(getEmployeeCount());
+      clearFormData();
+      toast.success('User created successfully');
     }
-  },[dispatch,isEmployeeCreated])
- 
-  
-  const deletehandle = (id) =>{
-    dispatch(deleteEmployee(id))
-  }
-  useEffect(()=>{
-    if(employeeDeleted){
-      dispatch(clearState())
+  }, [dispatch, isEmployeeCreated]);
+
+  const deleteHandle = (id) => {
+    dispatch(deleteEmployee(id));
+  };
+
+  useEffect(() => {
+    if (employeeDeleted) {
+      dispatch(clearState());
       dispatch(getAllEmployees());
-      dispatch(getEmployeeCount())
-      toast.success("User deleted successfully")
+      dispatch(getEmployeeCount());
+      toast.success('User deleted successfully');
     }
-  },[dispatch,employeeDeleted]);
- 
+  }, [dispatch, employeeDeleted]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -121,12 +152,13 @@ const Employee = () => {
 
   const handleUpdateData = (employeeId) => {
     setSelectedId(employeeId);
-    
+
     const editData = allEmployees.find((emp) => emp._id === employeeId);
-    if(editData){
+    if (editData) {
       setUpdateData({
         name: editData.name,
         email: editData.email,
+        image: editData.image,
         address: editData.address,
         dateOfJoined: editData.dateOfJoined,
         salary: editData.salary,
@@ -134,36 +166,30 @@ const Employee = () => {
         phoneNo: editData.phoneNo,
         deductionForLeave: editData.deductionForLeave,
         designation: editData.designation,
-        gender : editData.gender
-      })
-      
+        gender: editData.gender,
+      });
     } else {
-      toast.error("Employee not found");
-      console.log("error")
+      toast.error('Employee not found');
     }
-  }
-
-
+  };
 
   const handleSubmitUpdate = (e) => {
     e.preventDefault();
     axios
       .put(`${baseurl}/update/${selectedId}`, updateData)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         dispatch(getAllEmployees());
-        toast.success('Employee Updated successfully');
+        toast.success('Employee updated successfully');
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         toast.error('Error in updating employee');
-      }
-      );
+      });
   };
+
   return (
     <div className="flex">
-        <Admin/>
-        <div className=" flex flex-col w-full gap-20 ml-72 mr-8 mt-7 mb-10 ">
+      <Admin />
+      <div className=" flex flex-col w-full gap-20 ml-72 mr-8 mt-7 mb-10 ">
             <div className=' flex justify-between  items-center '>
                 <div className=' flex gap-4  items-center text-xl  font-semibold'>
                     {totalEmployee ? (<p className=' font-bold text-blue-800'> {totalEmployee} Employee</p>) : <p> 0 Employee</p>}
@@ -193,7 +219,7 @@ const Employee = () => {
                     <Input name='leave' label='Enter Leave ' color='blue' value={deductionForLeave} onChange={(e)=>setDeductionForLeave(e.target.value)}/>
                     <Input name='designation' label='Enter Designation ' color='blue' value={designation} onChange={(e)=>setDesignation(e.target.value)}/>
                     <Input name='gender' label='Enter Gender ' color='blue' value={gender} onChange={(e)=>setGender(e.target.value)}/>
-                    <Input  type='file' id='from file' className="w-full border border-[black] rounded-lg " name="image" accept="image/*" onChange={(e) => setImage(e.target.files[0])}/>
+                    <Input  type='file' id='from file' className="w-full border border-[black] rounded-lg " />
                   </div>
                   <div className='modal-button'>
                     <button type='submit' aria-label='Close' data-bs-dismiss="modal" className=" bg-gradient-to-r from-[#003268] to-[#006ee8] text-[white] mt-3  p-2 rounded-lg">
@@ -217,7 +243,7 @@ const Employee = () => {
                   <div className="flex justify-between">
                     <div className="flex flex-col gap-1">
                       <img
-                        src={`https://hr-flow-server.vercel.app/api/v1/images/${emp?.image}`}
+                        src={emp?.image?.url}
                         alt="user"
                         className=" rounded-full h-[80px] w-[80px] object-cover"
                       />
@@ -256,7 +282,7 @@ const Employee = () => {
                           <a
                             class="dropdown-item hover:bg-[red] hover:text-white"
                             href="#"
-                            onClick={() => deletehandle(emp._id)}
+                            onClick={() => deleteHandle(emp._id)}
                           >
                             Delete
                           </a>
@@ -325,7 +351,10 @@ const Employee = () => {
         </div>
        
     </div>
-  )
-}
+  );
+};
 
-export default Employee
+export default Employee;
+
+
+

@@ -13,13 +13,13 @@ import {getSingleAttendance,getSingleEmployee } from '../store/reducers/adminRed
 import Spinner from "../comonents/Spinner"
 const EmployeeDashboard = () => {
   const { id } = useParams();
-  console.log("Employee ID from URL params:", id);
-  const { loading, error, attendence, employee } = useSelector((state) => state.admin);
+  const { loading, error, attendance, employee } = useSelector((state) => state.admin);
+  console.log(attendance);
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getSingleAttendance(id));
     dispatch(getSingleEmployee(id));
+    
   }, [dispatch, id]);
 
   return (
@@ -33,14 +33,14 @@ const EmployeeDashboard = () => {
             <p>Error: {error}</p>
           ) : (
             employee && (
-              <div key={employee.id}>
+              <div key={employee._id}>
                 <div className='flex justify-between p-2 mb-6'>
                   <div className='flex flex-col gap-4'>
                     <p className='font-bold text-xl'>{employee.name}</p>
                     <p className='text-xl text-gray-500'>{employee.designation}</p>
                   </div>
                   <div className='flex justify-center items-center border-4 border-blue-900 rounded-full w-28 h-28'>
-                    <img src={`https://hr-flow-server.vercel.app/api/v1/images/${employee?.image}`} alt="" className='w-[100px] h-[100px] rounded-full' />
+                    <img src={employee?.image?.url} alt="" className='w-[100px] h-[100px] rounded-full' />
                   </div>
                 </div>
                 <div className='flex justify-between rounded bg-white p-7'>
@@ -78,9 +78,9 @@ const EmployeeDashboard = () => {
           )}
         </div>
         <div>
-          <div className="text-[30px] font-semibold py-4">Attendance History</div>
+          <div className="text-[30px] font-semibold py-4">Attendence History</div>
           <div>
-            {attendence && attendence.length > 0 ? (
+            {attendance && attendance.length > 0 ? (
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 750 }} aria-label="simple table">
                   <TableHead>
@@ -92,7 +92,7 @@ const EmployeeDashboard = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {attendence.map((row, index) => (
+                    {attendance.map((row, index) => (
                       <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                         <TableCell align="center">{row._id}</TableCell>
                         <TableCell align="center">{row.employeeId}</TableCell>
