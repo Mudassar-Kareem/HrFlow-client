@@ -70,7 +70,7 @@ const Employee = () => {
   });
 };
 
-const handleCreateEmployee = async () => {
+const handleSubmit = async () => {
   try {
     // Ensure image is a Blob
     if (!(image instanceof Blob)) {
