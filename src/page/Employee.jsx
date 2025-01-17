@@ -211,7 +211,18 @@ const Employee = () => {
                     <Input name='leave' label='Enter Leave ' color='blue' value={deductionForLeave} onChange={(e)=>setDeductionForLeave(e.target.value)}/>
                     <Input name='designation' label='Enter Designation ' color='blue' value={designation} onChange={(e)=>setDesignation(e.target.value)}/>
                     <Input name='gender' label='Enter Gender ' color='blue' value={gender} onChange={(e)=>setGender(e.target.value)}/>
-                    <Input  type='file' id='from file' className="w-full border border-[black] rounded-lg " />
+                    <Input
+  type="file"
+  accept="image/*"
+                      className="w-full border border-[black] rounded-lg " 
+  onChange={(e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  }}
+/>
+
+                    
                   </div>
                   <div className='modal-button'>
                     <button type='submit' aria-label='Close' data-bs-dismiss="modal" className=" bg-gradient-to-r from-[#003268] to-[#006ee8] text-[white] mt-3  p-2 rounded-lg">
