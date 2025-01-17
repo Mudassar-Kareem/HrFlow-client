@@ -58,15 +58,7 @@ const Employee = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (
-      !name || !email || !password || !address || 
-      !dateOfJoined || !salary || !department || 
-      !phoneNo || !deductionForLeave || !designation || 
-      !gender || !image
-    ) {
-      alert('Please fill all fields');
-      return;
-    }
+    
   
     // Convert image to base64
     const convertToBase64 = (file) => {
