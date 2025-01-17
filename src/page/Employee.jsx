@@ -61,39 +61,53 @@ const Employee = () => {
     
   
     // Convert image to base64
-    const convertToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
-    };
-  
-    try {
-      const imageBase64 = await convertToBase64(image);
-  
-      const payload = {
-        name,
-        email,
-        password,
-        address,
-        salary,
-        gender,
-        designation,
-        dateOfJoined,
-        phoneNo,
-        department,
-        deductionForLeave,
-        image: imageBase64, // Sending image as base64 string
-      };
-  
-      await dispatch(createEmployee(payload));
-    } catch (err) {
-      toast.error('Error creating employee');
-      console.error(err);
+   const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+const handleCreateEmployee = async () => {
+  try {
+    // Ensure image is a Blob
+    if (!(image instanceof Blob)) {
+      console.error('Provided image is not a valid Blob object');
+      return;
     }
-  };
+
+    console.log('Converting image to base64...');
+    const imageBase64 = await convertToBase64(image);
+    
+    console.log('Base64 image:', imageBase64); // For debugging
+
+    const payload = {
+      name,
+      email,
+      password,
+      address,
+      salary,
+      gender,
+      designation,
+      dateOfJoined,
+      phoneNo,
+      department,
+      deductionForLeave,
+      image: imageBase64, // Sending image as base64 string
+    };
+
+    console.log('Payload:', payload); // For debugging
+
+    await dispatch(createEmployee(payload));
+    console.log('Employee created successfully');
+  } catch (err) {
+    toast.error('Error creating employee');
+    console.error(err);
+  }
+};
+
   
 
   const clearFormData = () => {
