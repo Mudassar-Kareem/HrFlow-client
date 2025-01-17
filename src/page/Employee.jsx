@@ -54,22 +54,17 @@ const Employee = () => {
     dispatch(getAllEmployees());
     dispatch(getEmployeeCount());
   }, [dispatch]);
-
+const handleFileInputChange = (e) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImage(reader.result);
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    
-  
-    // Convert image to base64
-    const convertToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
-    };
-  
     try {
       const imageBase64 = await convertToBase64(image);
   
@@ -85,7 +80,7 @@ const Employee = () => {
         phoneNo,
         department,
         deductionForLeave,
-        image: imageBase64, // Sending image as base64 string
+        image,
       };
   
       await dispatch(createEmployee(payload));
@@ -101,7 +96,7 @@ const Employee = () => {
     setEmail('');
     setPassword('');
     setAddress('');
-    setImage('');
+    setImage(null);
     setDateOfJoined('');
     setSalary('');
     setDepartment('');
@@ -211,17 +206,14 @@ const Employee = () => {
                     <Input name='leave' label='Enter Leave ' color='blue' value={deductionForLeave} onChange={(e)=>setDeductionForLeave(e.target.value)}/>
                     <Input name='designation' label='Enter Designation ' color='blue' value={designation} onChange={(e)=>setDesignation(e.target.value)}/>
                     <Input name='gender' label='Enter Gender ' color='blue' value={gender} onChange={(e)=>setGender(e.target.value)}/>
-                    <Input
-  type="file"
-  accept="image/*"
-                      className="w-full border border-[black] rounded-lg " 
-  onChange={(e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  }}
-/>
-
+                    <input
+                      type="file"
+                      name="image"
+                      id="file-input"
+                      accept=".jpg,.jpeg,.png"
+                      onChange={handleFileInputChange}
+                      className="sr-only"
+                    />
                     
                   </div>
                   <div className='modal-button'>
